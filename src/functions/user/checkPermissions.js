@@ -1,32 +1,53 @@
-export function checkMenuPermission(name, permissions) {
-  const pieces = name.split('/')
-
-  for (let i = 0; i < pieces.length - 1; i++) {   
-    if (permissions.hasOwnProperty(pieces[i])) {
-      permissions = permissions[pieces[i]]
-      console.log(permissions)
+export function checkMenuPermissions(name, permissions) {
+  if (!permissions) return false
+  if (permissions.hasOwnProperty('user')) {
+    if (permissions.hasOwnProperty('globalAdmin')) {
+      if (permissions.globalAdmin === true) {
+        return true
+      }
     }
   }
-  if (permissions.hasOwnProperty(pieces[pieces.length - 1])) {
-    console.log('exists', permissions)
-    return true
+
+  const pieces = name.split('/')
+
+  for (let i = 0; i < pieces.length -1; i++) {
+      if (permissions.hasOwnProperty(pieces[i])) {
+          permissions = permissions[pieces[i]]
+      }
+  }
+
+  if (permissions) {
+    if (permissions.hasOwnProperty(pieces[pieces.length - 1])) {
+        return true
+    }
   }
 
   return false
 }
 
 export function checkAccessPermission(name, permissions) {
+  if (!permissions) return false
+  if (permissions.hasOwnProperty('user')) {
+    if (permissions.hasOwnProperty('globalAdmin')) {
+      if (permissions.globalAdmin === true) {
+        return true
+      }
+    }
+  }
+    
   const pieces = name.split('/')
-  let location = null
-  for (let i = 0; i < pieces.length - 1; i++) {
+  
+  for (let i = 0; i < pieces.length -1; i++) {
       if (permissions.hasOwnProperty(pieces[i])) {
-        location = permissions[pieces[i]]
+          permissions = permissions[pieces[i]]
       }
   }
 
-  if (location) {
-    if (location.hasOwnProperty(pieces[pieces.length - 1]) && pieces[pieces.length - 1] === true ) {
-      return true
+  if (permissions) {
+    if (permissions.hasOwnProperty(pieces[pieces.length - 1])) {
+      if (permissions[pieces[pieces.length -1]] === true) {
+        return true
+      }
     }
   }
 

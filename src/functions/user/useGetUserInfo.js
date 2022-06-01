@@ -22,11 +22,12 @@ function useGetUserInfo() {
       }
   }, [])
 
+  console.log('state ', state.value)
   return {
     appStarted: state.context.appStarted,
     inProgress: state.context.inProgress,
     completed: state.value === 'finished',
-    success: !state.context.inProgress && state.context.userInfo.status !== '' & state.context.userInfo.status === 'ok',
+    success: !state.context.inProgress && state.context.userInfo.status !== '' && state.context.userInfo.status === 'ok',
     status: state.context.userInfo.status,
     token: state.context.userInfo.token || undefined,
     user: state.context.userInfo.user

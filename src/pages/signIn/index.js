@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import config from 'config'
 import SignIn from 'pages/signin/SignIn'
 import useGetUserInfo from 'functions/user/useGetUserInfo'
+import { prepareTokenForChangeUserPassword } from 'functions/user/changeUserPassword'
 
 const index = () => {
   const userInfo = useGetUserInfo()
@@ -16,9 +17,7 @@ const index = () => {
         if (userInfo.status === 'shouldChangePassword') {
           const token = userInfo.token
           const showCurrentPassword = '0'
-          const redirectToUsersHomePage = '1'
-          const url = config.urls.user.changePassword.path + '/' + token + showCurrentPassword + redirectToUsersHomePage
-    
+          const url = prepareTokenForChangeUserPassword(token, showCurrentPassword)
           navigate(url)
         }
       }    

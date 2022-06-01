@@ -18,4 +18,8 @@ async function changeUserPassword(token, newPassword) {
   }
 }
 
+export function prepareTokenForChangeUserPassword(token, showCurrentPassword) {
+  return config.urls.user.changePassword.path + '/' + token + showCurrentPassword
+}
+
 export default changeUserPassword

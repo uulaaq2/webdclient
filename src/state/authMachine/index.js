@@ -46,6 +46,7 @@ export const authMachine = createMachine({
       },
       exit: [
               assign({ signInType: (context, event) => event.data.signInType }),      
+              assign({ rememberMe: (context, event) => event.data.rememberMe }),                    
               assign({ userInfo: (context, event) => event.data.userInfo })            
             ]
     },
@@ -136,7 +137,7 @@ export const authMachine = createMachine({
         id: 'signOut',
         src: doSignout,
         onDone: {
-          actions: [assign({ userInfo: {status: ''} }), (context) => console.log(context)],
+          actions: assign({ userInfo: () => {return {status: ''}} }),
           target: 'finished'
         },
         exit: assign({ inProgress: false})
@@ -182,7 +183,7 @@ service.start()
 // get user
 async function doGetUser(context, event) {
   try {        
-    const { requestType = '', email = undefined, password = undefined, rememberMe = undefined, token = undefined } = event        
+    const { requestType = '', email = undefined, password = undefined, rememberMe = undefined, token = undefined } = event  
     let signInType    
     let getUserResult
     let rememberMeTemp = rememberMe
@@ -205,12 +206,14 @@ async function doGetUser(context, event) {
       getUserResult = await changeUserPassword(token, password)
       rememberMeTemp = getUserResult.rememberMe
     }
-    
+
     return {
       userInfo: getUserResult,
       signInType,
       rememberMe: rememberMeTemp
     }
+
+ 
   } catch (error) {
     return {
       userInfo: setError(error),
@@ -226,7 +229,7 @@ async function doStoreToken(context, event) {
     if (context.signInType === 'token') {
       return setSuccess()
     }
-
+    
     const { rememberMe = false } = context
     const { token = '' } = context.userInfo    
     const { Can_Be_Remembered = false } = context.userInfo.user    
@@ -241,13 +244,6 @@ async function doStoreToken(context, event) {
 
 async function doSignout(context, event) {
   deleteLocalStorage('token')
-
-  const userInfo = {
-    status: ''
-  }
-
-
-  console.log('aaa ', context)
 }
 
 // clear context

@@ -1,4 +1,5 @@
-import 'css/app.css'
+import '../../node_modules/@primer/css/dist/primer.css'
+import './style.css'
 import React, { createContext } from 'react'
 import {
   BrowserRouter as Router,

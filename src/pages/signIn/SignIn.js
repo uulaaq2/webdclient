@@ -5,6 +5,12 @@ import config from 'config'
 import pageInitial from 'functions/pageInitial'
 import { validateInputFields } from 'functions/validateInputFields'
 
+import { FormControl, Box, Heading } from '@primer/react'
+import B_Button from 'baseComponents/B_Button'
+import B_InputFormGroup from 'baseComponents/B_InputFormGroup'
+import B_CheckboxFormGroup from 'baseComponents/B_CheckboxFormGroup'
+import B_Formerror from 'baseComponents/B_Formerror'
+
 import { GlobalStateContext } from 'state/globalState'
 import { useActor } from '@xstate/react'
 
@@ -51,7 +57,8 @@ const SignIn = () => {
       throw new Error(validateInputFieldsResult.message) 
     }
     if (validateInputFieldsResult.status !== 'ok') return
-  
+    
+
     send('SIGN_IN', {    
       requestType: 'signInWihCredentials',
       email: emailRef.current.value, 
@@ -62,17 +69,51 @@ const SignIn = () => {
   }
 
   return (
-    <>
-      <div data-color-mode="auto" data-light-theme="light" data-dark-theme="dark_dimmed" className="p-3">
-  <h4>Synced to system</h4>
-  <code className="d-block mt-1 mb-3 color-fg-muted">
-    data-color-mode="auto" data-light-theme="light" data-dark-theme="dark_dimmed"
-  </code>
-  <button className="btn">Button</button>
-  <span className="Label ml-2">Label</span>
-  <span className="Counter ml-2">123</span>
-</div>
-    </>
+    <div className='d-flex flex-column flex-justify-center flex-items-center mt-5'>
+      <img src={logo} alt={config.app.name} width={90} className='mb-4'/>
+      <Heading sx={{fontSize: '1.5rem', fontWeight: 'normal', mb: 3}}>Welcome</Heading>
+      <div className='box col-11 col-sm-8 col-md-6 col-lg-5 col-xl-3 p-3 color-bg-subtle border'>
+        <Box display="grid" gridGap={3}>
+          <FormControl>
+            <B_InputFormGroup 
+              id={inputs.email.id}
+              label={inputs.email.label} 
+              error={inputs.email.errorText}
+              type={inputs.email.type}
+              maxLength={inputs.email.maxLength}
+              inputRef={inputs.email.ref}
+            />
+          </FormControl>
+
+          <FormControl>
+            <B_InputFormGroup 
+              id={inputs.password.id}
+              label={inputs.password.label}             
+              error={inputs.password.errorText}
+              type={inputs.password.type}
+              maxLength={inputs.password.maxLength}
+              inputRef={inputs.password.ref}            
+            />
+          </FormControl>
+
+          <FormControl>
+            <B_CheckboxFormGroup 
+              id='keepMeSignedIn' 
+              label='Keep me signed in' 
+              inputRef={rememberMeRef}
+            />
+          </FormControl>
+
+          <B_Button variant='primary' sx={{ marginTop: '0.5rem' }} onClick={handleSignin} loadingElipses={state.context.inProgress}>Sign in</B_Button>
+
+          { (state.context.userInfo.status === 'accountIsExpired' || state.context.userInfo.status === 'warning' || state.context.userInfo.status === 'error') &&
+                <>
+                  <B_Formerror message={state.context.userInfo.message} />
+                </>
+              }
+        </Box>
+      </div>
+    </div>
   );
 };
 
