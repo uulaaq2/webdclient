@@ -1,11 +1,10 @@
 import React from 'react';
-import { ProtectedHome } from 'pages/protected/home';
+import { ProtectedHome } from 'pages/protected/home'
+import { PageLayout } from '@primer/react'
 
 const index = () => {
   return (
-    <>
-      ProtectedHome
-    </>
+    <>protected Home</>
   );
 };
 

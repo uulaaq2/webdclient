@@ -13,6 +13,7 @@ import PublicHome from 'pages/public/home'
 import SignIn from 'pages/signIn'
 import SignOut from 'pages/signOut'
 import ChangePassword from 'pages/public/changePassword'
+import Settings from 'pages/protected/settings'
 
 import ProtectedHome from 'pages/protected/home'
 
@@ -39,6 +40,13 @@ const App = () => {
               path="/" 
               element={
                 <PrivateRoute element={<ProtectedHome />} />
+              }            
+            />
+
+            <Route 
+              path="/settings" 
+              element={
+                <PrivateRoute element={<Settings />} />
               }            
             />
 
