@@ -15,7 +15,7 @@ const index = () => {
   const globalServices = useContext(GlobalStateContext)  
   const { send } = globalServices.authService
   const [ state  ] = useActor(globalServices.authService)    
-  const userAvatar = config.api.urls.user.userProfile + '/' + state.context.userInfo.user.Email + '/' + state.context.userInfo.user.Avatar
+  const userAvatar = config.api.urls.user.userProfile + '/' + state.context.userInfo.user.Email_Address + '/' + state.context.userInfo.user.Avatar
 
   const [appMenuOpen, setAppMenuOpen] = useState(false)
   const appMenuAnchorRef = createRef()
@@ -97,7 +97,7 @@ const AppMenu = ( { state, open, onOpenChange, anchorRef }) => {
           Public
         </ActionList.Item>        
         { checkMenuPermissions('app/settings', state.context.userInfo.user.permissions) && 
-          <ActionList.Item onClick={() => handleGoTo('settings')}>
+          <ActionList.Item onClick={() => handleGoTo('/settings')}>
             <ActionList.LeadingVisual>
               <GearIcon />
             </ActionList.LeadingVisual>
