@@ -1,10 +1,14 @@
+import './style.css'
 import React, { useContext, useState, createRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Heading, Header, StyledOcticon, Avatar, Box, ActionMenu, ActionList, IconButton, Tooltip } from '@primer/react'
 import { HomeIcon, ThreeBarsIcon, GearIcon, TriangleDownIcon, PeopleIcon, SignOutIcon, ToolsIcon } from '@primer/octicons-react'
 
+import logo from 'images/logo.png'
 import config from 'config'
 import { checkMenuPermissions, checkAccessPermission } from 'functions/user/checkPermissions'
+
+import { CSSTransition } from 'react-transition-group'
 
 import { GlobalStateContext } from 'state/globalState'
 import { useActor } from '@xstate/react'
@@ -26,7 +30,7 @@ const index = () => {
   return (
 
   <Header sx={{ display: 'flex', justifyContent: 'space-between'}}>
-    <AppMenu state={state} open={appMenuOpen} onOpenChange={setAppMenuOpen} anchorRef={appMenuAnchorRef} />
+    <AppMenu open={appMenuOpen} />
     <div>
       <Header.Item>
           <Header.Link ref={appMenuAnchorRef} onClick={() => setAppMenuOpen(!appMenuOpen)}>
@@ -73,40 +77,17 @@ const index = () => {
   );
 };
 
-const AppMenu = ( { state, open, onOpenChange, anchorRef }) => {
-  const navigate = useNavigate()
-  function handleGoTo(pageName) {
-    onOpenChange(false)
-    navigate(pageName)
-  }
-
+const AppMenu = ({ open }) => {
+  console.log(open)
   return (
-    <ActionMenu open={open} onOpenChange={onOpenChange} anchorRef={anchorRef}>
-    <ActionMenu.Overlay>
-      <ActionList>
-        <ActionList.Item onClick={() => handleGoTo('/')}>
-          <ActionList.LeadingVisual>
-            <HomeIcon />
-          </ActionList.LeadingVisual>
-          Home
-        </ActionList.Item>
-        <ActionList.Item onClick={() => handleGoTo('/')}>
-          <ActionList.LeadingVisual>
-            <HomeIcon />
-          </ActionList.LeadingVisual>
-          Public
-        </ActionList.Item>        
-        { checkMenuPermissions('app/settings', state.context.userInfo.user.permissions) && 
-          <ActionList.Item onClick={() => handleGoTo('/settings')}>
-            <ActionList.LeadingVisual>
-              <GearIcon />
-            </ActionList.LeadingVisual>
-            Settings
-          </ActionList.Item>
-        }
-      </ActionList>
-    </ActionMenu.Overlay>
-  </ActionMenu>
+    <CSSTransition in={open} timeout={500} classNames='deneme' unmountOnExit>
+      <div className='appMenuWrapper'>
+        <Box borderWidth={1} borderStyle="solid" p={3}>      
+          sdfjkl;asdfkjlsadjflk
+
+        </Box>
+      </div>
+    </CSSTransition>
   )
 }
 
