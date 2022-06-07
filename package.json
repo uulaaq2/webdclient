@@ -42,6 +42,7 @@
     "@primer/react": "^35.2.2",
     "@xstate/react": "^3.0.0",
     "axios": "^0.27.2",
+    "bootstrap-icons": "^1.8.3",
     "global": "^4.4.0",
     "path": "^0.12.7",
     "process": "^0.11.10",
