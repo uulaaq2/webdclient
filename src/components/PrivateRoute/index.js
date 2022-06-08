@@ -5,14 +5,13 @@ import useGetUserInfo from 'functions/user/useGetUserInfo'
 import B_Navbar from 'baseComponents/B_Navbar'
 import B_Pageloading from 'baseComponents/B_Pageloading'
 
-const index = ({ element }) => {
-  const userInfo = useGetUserInfo()
+const index = ({ page, element }) => {
+  const userInfo = useGetUserInfo(page)
   const navigate = useNavigate()
-    
+
   useEffect(() => {
     if (userInfo.completed) {
       if (!userInfo.success) {    
-        console.log('navigate')
         navigate(config.urls.public.path)
       }    
     }

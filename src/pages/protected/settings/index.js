@@ -1,39 +1,81 @@
-import React from 'react'
+import React, { useState, useContext } from 'react'
 import { Heading, Box, PageLayout } from '@primer/react'
 import B_PageLayout from 'baseComponents/B_PageLayout'
 
+import config from 'config'
 import B_SecondaryMenu from 'baseComponents/B_SecondaryMenu'
+import Groups from 'components/C_Groups'
+import B_MainSectionTitle from 'baseComponents/B_MainSectionTitle'
+import pageInitial from 'functions/pageInitial'
+
+import { checkMenuPermissions } from 'functions/user/checkPermissions';
+
+import { GlobalStateContext } from 'state/globalState'
+import { useActor } from '@xstate/react'
 
 const index = () => {
+  pageInitial({ pageName: 'settings' })
+  const globalServices = useContext(GlobalStateContext)  
+  const { send } = globalServices.authService
+  const [ state  ] = useActor(globalServices.authService)    
+
+  const [selectedMenu, setSelectedMenu] = useState()
+
   return (
-  <B_PageLayout>
+  <PageLayout>
     <PageLayout.Pane position="start">
-      <Heading sx={{fontSize: 3, mb: 2}}>Settings</Heading>
-      <Box>
-        <B_SecondaryMenu
-          label='Users'
-          rightIcon={true}
-        />
-
-        <B_SecondaryMenu
-          label='Departments'
-          rightIcon={true}
-        />
-
-        <B_SecondaryMenu
-          label='Groups'
-          rightIcon={true}
-          goTo={'settings/groups'}
-        />
-
+      <B_MainSectionTitle title={config.urls.settings.name} showTitle={true} />
+      <Box
+        sx={{
+          bg: config.theme.colors.secMenuBg
+        }}
+      >
+        <SettingsMenu state={state} send={send} selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu} />
       </Box>
     </PageLayout.Pane>
 
     <PageLayout.Content>
-    <Heading sx={{fontSize: 3, mb: 2}}>Groups</Heading>
+      { selectedMenu === 'groups' && <Groups showTitle={false} />}
     </PageLayout.Content>
-  </B_PageLayout>
+  </PageLayout>
   );
 };
 
-export default index;
+function SettingsMenu({ state, send, selectedMenu, setSelectedMenu}) {  
+  const permissions = state.context.userInfo.user.permissions
+  return (
+    <>
+      { checkMenuPermissions('settings/users', permissions) &&
+        <B_SecondaryMenu
+          goTo='users'
+          label='Users'
+          rightIcon={true}
+          selected={selectedMenu}
+          setSelectedMenu={setSelectedMenu}
+        />
+      }
+      
+      { checkMenuPermissions('settings/departments', permissions) &&
+        <B_SecondaryMenu
+          goTo='departments'
+          label='Departments'
+          rightIcon={true}
+          selected={selectedMenu}
+          setSelectedMenu={setSelectedMenu}
+        />
+    }
+    
+    { checkMenuPermissions('settings/groups', permissions) &&
+      <B_SecondaryMenu
+        goTo='groups'
+        label='Groups'
+        rightIcon={true}
+        selected={selectedMenu}
+        setSelectedMenu={setSelectedMenu}
+      />
+    }
+    </>
+  )
+}
+
+export default index

@@ -5,10 +5,12 @@ import { useActor } from '@xstate/react'
 import { getLocalStorage } from 'functions/localStorage'
 import { stateValuesEqual } from 'xstate/lib/State'
 
-function useGetUserInfo() {
+function useGetUserInfo(page) {
   const globalServices = useContext(GlobalStateContext)  
   const { send } = globalServices.authService
   const [ state  ] = useActor(globalServices.authService)
+
+  state.context.currentPage = page
   
   useEffect(() => {    
       if (state.context.userInfo.status !== 'ok') {

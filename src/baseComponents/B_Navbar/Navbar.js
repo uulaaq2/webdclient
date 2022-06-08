@@ -74,7 +74,18 @@ export const AppMenu = ({ open, setOpen, children }) => {
         }
       }   
     >
-      <Box className={style.appMenuWrapper} borderRightColor="border.default" borderTopWidth={0} borderRightWidth={1} borderBottomWidth={0} borderLeft={0} borderStyle="solid">
+      <Box 
+        sx={{
+          bg: config.theme.colors.appMenuBg
+        }}
+        className={style.appMenuWrapper} 
+        borderRightColor="border.default" 
+        borderTopWidth={0} 
+        borderRightWidth={1} 
+        borderBottomWidth={0} 
+        borderLeft={0} 
+        borderStyle="solid"
+      >
         { children }
       </Box>
     </CSSTransition>    
@@ -102,10 +113,11 @@ export const AppMenuItem = ({ setOpen, leftIcon, label, goTo, checkPermissionFor
         padding: '0.5rem 0.5rem',
         cursor: 'pointer',
         borderColor: 'accent.emphasis',
-        bg: () => state.context.currentPage === goTo ? 'neutral.muted' : '',
+        bg: () => state.context.currentPage !== goTo ? config.theme.colors.appMenuItemBg : config.theme.colors.appMenuItemSelectedBg,
+        color: () => state.context.currentPage !== goTo ? config.theme.colors.appMenuItemFont : config.theme.colors.appMenuItemSelectedFont,
         ':hover': {
-          color: 'accent.emphasis',
-          bg: 'neutral.muted'
+          bg: config.theme.colors.appMenuItemHoverBg,
+          color: config.theme.colors.appMenuItemHoverFont
         }
       }}
       onClick={() => handleGoTo()}

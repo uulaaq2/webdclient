@@ -32,28 +32,28 @@ const App = () => {
             <Route 
               path="/public"
               element={
-                <PublicRoute element={<PublicHome />} />
+                <PublicRoute page='public' element={<PublicHome />} />
               }
             />
 
             <Route 
               path="/" 
               element={
-                <PrivateRoute element={<ProtectedHome />} />
+                <PrivateRoute page='home' element={<ProtectedHome />} />
               }            
             />
 
             <Route 
               path="/settings" 
               element={
-                <PrivateRoute element={<Settings />} />
+                <PrivateRoute page='settings' element={<Settings />} />
               }            
             />
 
             <Route 
               path="/sites" 
               element={
-                <PrivateRoute element={<Sites />} />
+                <PrivateRoute page='sites' element={<Sites />} />
               }            
             />
 
