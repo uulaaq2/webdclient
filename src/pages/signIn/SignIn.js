@@ -13,6 +13,7 @@ import B_Formerror from 'baseComponents/B_Formerror'
 
 import { GlobalStateContext } from 'state/globalState'
 import { useActor } from '@xstate/react'
+import { getLocalStorage } from 'functions/localStorage';
 
 const SignIn = () => {
   pageInitial( {pageName: 'user.signIn'} )
@@ -24,6 +25,7 @@ const SignIn = () => {
   const emailRef = useRef()
   const passwordRef = useRef()
   const rememberMeRef = useRef()  
+  const [storedEmailAddress, setStoredEmailAddress] = useState('')
   
   const [erroredInputs, setErroredInputs] = useState([])  
   const [inputs] = useState({
@@ -48,6 +50,17 @@ const SignIn = () => {
     inputErors: 0,
     setErroredInputs: setErroredInputs,
   })  
+
+  useEffect(() => {
+    const storedEmailAddress = getLocalStorage('email_address').value   
+
+    if (!storedEmailAddress || storedEmailAddress === 'undefined') {
+      emailRef.current.focus()
+    } else {
+      emailRef.current.value = storedEmailAddress
+      passwordRef.current.focus()
+    }
+  }, [])
 
 
 
@@ -81,7 +94,7 @@ const SignIn = () => {
               error={inputs.email.errorText}
               type={inputs.email.type}
               maxLength={inputs.email.maxLength}
-              inputRef={inputs.email.ref}
+              inputRef={inputs.email.ref}              
             />
           </FormControl>
 

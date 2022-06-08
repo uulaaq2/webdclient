@@ -13,6 +13,7 @@ export const authMachine = createMachine({
     userInfo: {
       status: ''
     },
+    currentPage: 'home',
     signInType: '',
     rememberMe: false,
     inProgress: false,
@@ -205,6 +206,10 @@ async function doGetUser(context, event) {
       signInType = 'credentials'      
       getUserResult = await changeUserPassword(token, password)
       rememberMeTemp = getUserResult.rememberMe
+    }
+
+    if (getUserResult.status === 'ok') {
+      setLocalStorage('email_address', getUserResult.user.Email_Address, true)
     }
 
     return {

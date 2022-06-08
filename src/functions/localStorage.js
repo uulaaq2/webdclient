@@ -45,7 +45,7 @@ function getCookie(key) {
     const cDecoded = decodeURIComponent(document.cookie);
     const cArr = cDecoded .split('; ');
     let res = ''
-    
+
     if (cArr) {
       cArr.forEach(val => {
           if (val.indexOf(key) === 0) res = val.substring(key.length);
@@ -53,7 +53,7 @@ function getCookie(key) {
     }
 
     key = key.slice(-1)
-
+    
     const data = {
       key,
       value: res

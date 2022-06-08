@@ -11,6 +11,7 @@ const index = () => {
     <Navbar>
       <HamburgerMenu>
         <AppMenu />
+        
       </HamburgerMenu>
 
       <UserAvatar />

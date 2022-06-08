@@ -76,7 +76,8 @@ module.exports={
             config: "/src/config",
             functions: "/src/functions",
             images: "/src/images",
-            css: "/src/css"
+            css: "/src/css",
+            hooks: "/src/hooks"
         }
     },
     module:{

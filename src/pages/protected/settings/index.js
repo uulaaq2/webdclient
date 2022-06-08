@@ -1,25 +1,38 @@
 import React from 'react'
-import { PageLayout, SideNav, Text, Heading, StyledOcticon } from '@primer/react'
-import { ArrowRightIcon } from '@primer/octicons-react'
+import { Heading, Box, PageLayout } from '@primer/react'
+import B_PageLayout from 'baseComponents/B_PageLayout'
+
+import B_SecondaryMenu from 'baseComponents/B_SecondaryMenu'
 
 const index = () => {
   return (
-  <PageLayout>
-    <PageLayout.Pane>
-      <Heading sx={{fontSize: 2, mb: 2}}>Settings</Heading>
-      <SideNav bordered maxWidth={360} aria-label="Main">
-        <SideNav.Link href="#account" variant="full">
-          <Text>Departments</Text>
-          <StyledOcticon sx={{mr: 2}} size={16} icon={ArrowRightIcon} color="success.fg" />
-        </SideNav.Link>
-        <SideNav.Link href="#account" variant="full">
-          <Text>Departments Departments Departments</Text>
-          <StyledOcticon sx={{mr: 2}} size={16} icon={ArrowRightIcon} color="success.fg" />
-        </SideNav.Link>
-    </SideNav>
+  <B_PageLayout>
+    <PageLayout.Pane position="start">
+      <Heading sx={{fontSize: 3, mb: 2}}>Settings</Heading>
+      <Box>
+        <B_SecondaryMenu
+          label='Users'
+          rightIcon={true}
+        />
 
+        <B_SecondaryMenu
+          label='Departments'
+          rightIcon={true}
+        />
+
+        <B_SecondaryMenu
+          label='Groups'
+          rightIcon={true}
+          goTo={'settings/groups'}
+        />
+
+      </Box>
     </PageLayout.Pane>
-  </PageLayout>
+
+    <PageLayout.Content>
+    <Heading sx={{fontSize: 3, mb: 2}}>Groups</Heading>
+    </PageLayout.Content>
+  </B_PageLayout>
   );
 };
 

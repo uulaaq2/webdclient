@@ -6,11 +6,14 @@ import { CSSTransition } from 'react-transition-group'
 import config from 'config'
 import logo from 'images/ibos.png'
 import { checkMenuPermissions } from 'functions/user/checkPermissions'
-import { Box, ActionList, theme, Avatar } from '@primer/react'
-import { ThreeBarsIcon, ChevronLeftIcon, GearIcon, TriangleDownIcon } from '@primer/octicons-react'
+import useAppnavigate from 'hooks/useAppnavigate'
+
+import { Box, ActionList, theme, Avatar, ActionMenu } from '@primer/react'
+import { HomeIcon, ThreeBarsIcon, ChevronLeftIcon, GearIcon, TriangleDownIcon } from '@primer/octicons-react'
 
 import { GlobalStateContext } from 'state/globalState'
 import { useActor } from '@xstate/react'
+import { send } from 'process'
 
 export const Navbar = (props) => {
   return (
@@ -21,6 +24,8 @@ export const Navbar = (props) => {
 }
 
 export const HamburgerMenu = ( props ) => {
+  const globalServices = useContext(GlobalStateContext)  
+  const [ state  ] = useActor(globalServices.authService)     
   const [appMenuOpen, setAppMenuOpen] = useState(false)
 
   return (
@@ -32,11 +37,22 @@ export const HamburgerMenu = ( props ) => {
           {appMenuOpen && <ChevronLeftIcon />}
         </span>        
         <img src={logo} alt='' className={style.logo} />
+        <Box 
+          sx={{
+            fontSize: '0.7rem',
+            marginLeft: '0.5rem',
+            opacity: '0.8',
+            cursor: 'pointer'
+          }}
+        >
+          {state.context.userInfo.user.Site}
+        </Box>
       </span>
 
       
 
       <AppMenu open={appMenuOpen} setOpen={setAppMenuOpen}>
+        <AppMenuItem setOpen={setAppMenuOpen} leftIcon={<HomeIcon size={20} />} label='Home' goTo='home' checkPermissionFor='home'></AppMenuItem>
         <AppMenuItem setOpen={setAppMenuOpen} leftIcon={<GearIcon size={20} />} label='Settings' goTo='settings' checkPermissionFor='settings'></AppMenuItem>
       </AppMenu>
 
@@ -51,8 +67,8 @@ export const AppMenu = ({ open, setOpen, children }) => {
       timeout={100}
       unmountOnExit   
       classNames={{
-          enter: style.appMenuEnter,
-          enterActive: style.appMenuEnterActive,
+          enter: style.appMenuEnter,          
+          enterActive: style.appMenuEnterActive,          
           exit: style.appMenuExit,
           exitActive: style.appMenuExitActive
         }
@@ -69,11 +85,13 @@ export const AppMenuItem = ({ setOpen, leftIcon, label, goTo, checkPermissionFor
   const globalServices = useContext(GlobalStateContext)  
   const [ state  ] = useActor(globalServices.authService)      
   const permissionName = checkPermissionFor
-  const navigate = useNavigate()
+  const appNavigate = useAppnavigate()
 
   function handleGoTo() {
     setOpen(false)    
-    navigate('/' + goTo)  
+    if (state.context.currentPage !== goTo) {
+      appNavigate(goTo)
+    }
   }
 
   if (checkMenuPermissions(permissionName, state.context.userInfo.user.permissions)) {
@@ -83,6 +101,8 @@ export const AppMenuItem = ({ setOpen, leftIcon, label, goTo, checkPermissionFor
         alignItems: 'center',
         padding: '0.5rem 0.5rem',
         cursor: 'pointer',
+        borderColor: 'accent.emphasis',
+        bg: () => state.context.currentPage === goTo ? 'neutral.muted' : '',
         ':hover': {
           color: 'accent.emphasis',
           bg: 'neutral.muted'
@@ -101,12 +121,39 @@ export const AppMenuItem = ({ setOpen, leftIcon, label, goTo, checkPermissionFor
 
 export const UserAvatar = () => {
   const globalServices = useContext(GlobalStateContext)    
+  const { send } = globalServices.authService
   const [ state  ] = useActor(globalServices.authService)    
+  
+  const [open, setOpen] = React.useState(false)
+  const anchorRef = React.createRef()
 
   const avatarPath = config.api.urls.user.userProfile + '/' + state.context.userInfo.user.Email_Address + '/' + state.context.userInfo.user.Avatar
+
+  let avatarButtonStyleNames = style.avatarButton
+  if (open) {
+    avatarButtonStyleNames += ' ' + style.avatarButtonActive
+  }
+
+  function handleSignout() {
+    send('SIGN_OUT')    
+  }
   return (  
     <div className={style.avatarButtonWrapper}>
-        <Avatar src={avatarPath} size={32} className={style.avatarButton}/>
+        <Avatar src={avatarPath} size={32} className={avatarButtonStyleNames} onClick={() => setOpen(!open)} ref={anchorRef} />
+
+        <ActionMenu open={open} onOpenChange={setOpen} anchorRef={anchorRef}>
+          <ActionMenu.Overlay>
+            <ActionList>
+              <ActionList.Group title={state.context.userInfo.user.Name}>
+                { checkMenuPermissions('userProfile', state.context.userInfo.user.permissions) &&
+                  <ActionList.Item>My profile</ActionList.Item>
+                }
+                <ActionList.Divider />
+                <ActionList.Item onClick={handleSignout}>Sign out</ActionList.Item>
+              </ActionList.Group>
+            </ActionList>
+          </ActionMenu.Overlay>
+        </ActionMenu>
     </div>
   )
 }
