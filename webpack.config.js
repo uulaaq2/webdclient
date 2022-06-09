@@ -71,6 +71,7 @@ module.exports={
             app: "/src/app",
             components: "/src/components",
             baseComponents: "/src/baseComponents",
+            pageComponents: "/src/pageComponents",
             pages: "/src/pages",
             state: "/src/state",
             config: "/src/config",

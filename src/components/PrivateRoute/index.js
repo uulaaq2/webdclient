@@ -5,8 +5,8 @@ import useGetUserInfo from 'functions/user/useGetUserInfo'
 import B_Navbar from 'baseComponents/B_Navbar'
 import B_Pageloading from 'baseComponents/B_Pageloading'
 
-const index = ({ page, element }) => {
-  const userInfo = useGetUserInfo(page)
+const index = ({ path, element }) => {
+  const userInfo = useGetUserInfo()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -22,7 +22,7 @@ const index = ({ page, element }) => {
       { (userInfo.inProgress) && <B_Pageloading />}
       { (userInfo.success && !userInfo.inProgress && userInfo.appStarted) && 
         <>
-          <B_Navbar />
+          <B_Navbar path/>
           { element }
         </>   
       }

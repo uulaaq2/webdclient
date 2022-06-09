@@ -11,17 +11,10 @@ const index = () => {
   const navigate = useNavigate()
 
   function doNavigate(goTo) {
-    if (goTo === 'home') {
-      state.context.currentPage = 'home'
-      return navigate('/')
-    } else {
-      state.context.currentPage = goTo      
-      return navigate('/' + goTo)
-    }
+    return navigate(goTo)
   }
 
   return doNavigate
-
 };
 
 export default index;

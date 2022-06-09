@@ -32,28 +32,48 @@ const App = () => {
             <Route 
               path="/public"
               element={
-                <PublicRoute page='public' element={<PublicHome />} />
+                <PublicRoute path element={<PublicHome />} />
               }
             />
 
             <Route 
               path="/" 
               element={
-                <PrivateRoute page='home' element={<ProtectedHome />} />
+                <PrivateRoute path element={<ProtectedHome />} />
               }            
             />
 
             <Route 
               path="/settings" 
               element={
-                <PrivateRoute page='settings' element={<Settings />} />
+                <PrivateRoute path element={<Settings />} />
               }            
             />
 
             <Route 
+              path="/settings/groups" 
+              element={
+                <PrivateRoute path element={<Settings />} />
+              }            
+            />            
+            <Route 
+              path="/settings/departments" 
+              element={
+                <PrivateRoute path element={<Settings />} />
+              }            
+            />            
+            <Route 
+              path="/settings/users" 
+              element={
+                <PrivateRoute path element={<Settings />} />
+              }            
+            />            
+
+
+            <Route 
               path="/sites" 
               element={
-                <PrivateRoute page='sites' element={<Sites />} />
+                <PrivateRoute path element={<Sites />} />
               }            
             />
 

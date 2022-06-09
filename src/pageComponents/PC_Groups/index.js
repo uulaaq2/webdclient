@@ -3,19 +3,23 @@ import pageInitial from 'functions/pageInitial'
 import B_MainSectionTitle from 'baseComponents/B_MainSectionTitle'
 import config from 'config'
 
-import { Box } from '@primer/react'
+import { Box, Button } from '@primer/react'
 
 const index = ({ showTitle = false }) => {
   pageInitial( {pageName: 'settings.groups'} )
   return (
     <>
-      <B_MainSectionTitle title={config.urls.settings.groups.name} showTitle={showTitle} />
       <Box 
         sx={{
-          bg: 'canvas.default'
+
         }}
-      >      
-        aaaa
+      >             
+        <Box pb={3}>
+          <Button variant='primary'>New group</Button>
+        </Box>
+        <Box sx={{bg: 'white'}} p={2}>
+aaaa
+        </Box>
       </Box>
     </>
   );

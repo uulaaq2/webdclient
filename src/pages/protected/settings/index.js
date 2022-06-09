@@ -1,12 +1,14 @@
 import React, { useState, useContext } from 'react'
-import { Heading, Box, PageLayout } from '@primer/react'
+import { ActionList, Box, PageLayout, Heading } from '@primer/react'
 import B_PageLayout from 'baseComponents/B_PageLayout'
 
 import config from 'config'
-import B_SecondaryMenu from 'baseComponents/B_SecondaryMenu'
-import Groups from 'components/C_Groups'
-import B_MainSectionTitle from 'baseComponents/B_MainSectionTitle'
+import PC_Groups from 'pageComponents/PC_Groups'
+import PC_Departments from 'pageComponents/PC_Departments'
+import PC_Users from 'pageComponents/PC_Users'
 import pageInitial from 'functions/pageInitial'
+import useAppnavigate from 'hooks/useAppnavigate'
+import useAppLocation from 'hooks/useAppLocation'
 
 import { checkMenuPermissions } from 'functions/user/checkPermissions';
 
@@ -15,65 +17,76 @@ import { useActor } from '@xstate/react'
 
 const index = () => {
   pageInitial({ pageName: 'settings' })
+  const appLocation = useAppLocation()  
   const globalServices = useContext(GlobalStateContext)  
   const { send } = globalServices.authService
   const [ state  ] = useActor(globalServices.authService)    
 
-  const [selectedMenu, setSelectedMenu] = useState()
-
   return (
   <PageLayout>
-    <PageLayout.Pane position="start">
-      <B_MainSectionTitle title={config.urls.settings.name} showTitle={true} />
-      <Box
-        sx={{
-          bg: config.theme.colors.secMenuBg
-        }}
-      >
-        <SettingsMenu state={state} send={send} selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu} />
-      </Box>
+    <PageLayout.Header>
+      <Heading sx={{fontSize: 3}}>{config.urls.settings.name}</Heading>
+    </PageLayout.Header>
+    <PageLayout.Pane position="start">       
+
+        <ActionList sx={{ bg: 'canvas.default' }}>
+          <SettingsMenuItem 
+            label={config.urls.settings.users.name}
+            goTo={config.urls.settings.users.path}
+            state={state} 
+          />
+
+          <SettingsMenuItem 
+            label={config.urls.settings.departments.name}
+            goTo={config.urls.settings.departments.path}
+            state={state} 
+          />
+
+          <SettingsMenuItem 
+            label={config.urls.settings.groups.name}
+            goTo={config.urls.settings.groups.path}
+            state={state} 
+          />          
+
+        </ActionList>      
+
     </PageLayout.Pane>
 
     <PageLayout.Content>
-      { selectedMenu === 'groups' && <Groups showTitle={false} />}
+      {appLocation.fullPath === '/settings/groups' &&
+        <PC_Groups />
+      }
+
+      {appLocation.fullPath === '/settings/departments' &&
+        <PC_Departments />
+      }
+
+      {appLocation.fullPath === '/settings/users' &&
+        <PC_Users />
+      }
     </PageLayout.Content>
   </PageLayout>
   );
 };
 
-function SettingsMenu({ state, send, selectedMenu, setSelectedMenu}) {  
-  const permissions = state.context.userInfo.user.permissions
+function SettingsMenuItem({ leadingVisual, label, state, goTo }) {  
+  const appLocation = useAppLocation()    
+  const appNavigate = useAppnavigate()
+
+  function handleGoTo() {    
+    if ( appLocation.fullPath !== goTo) {
+      appNavigate(goTo)
+    }
+  } 
+
   return (
     <>
-      { checkMenuPermissions('settings/users', permissions) &&
-        <B_SecondaryMenu
-          goTo='users'
-          label='Users'
-          rightIcon={true}
-          selected={selectedMenu}
-          setSelectedMenu={setSelectedMenu}
-        />
-      }
-      
-      { checkMenuPermissions('settings/departments', permissions) &&
-        <B_SecondaryMenu
-          goTo='departments'
-          label='Departments'
-          rightIcon={true}
-          selected={selectedMenu}
-          setSelectedMenu={setSelectedMenu}
-        />
-    }
-    
-    { checkMenuPermissions('settings/groups', permissions) &&
-      <B_SecondaryMenu
-        goTo='groups'
-        label='Groups'
-        rightIcon={true}
-        selected={selectedMenu}
-        setSelectedMenu={setSelectedMenu}
-      />
-    }
+      { checkMenuPermissions(goTo, state.context.userInfo.user.permissions) &&
+        <ActionList.Item onClick={() => handleGoTo()} active={appLocation.fullPath === goTo}>
+          <ActionList.LeadingVisual>{leadingVisual}</ActionList.LeadingVisual>
+          {label}
+        </ActionList.Item>
+      }     
     </>
   )
 }

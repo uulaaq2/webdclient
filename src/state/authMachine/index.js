@@ -13,7 +13,7 @@ export const authMachine = createMachine({
     userInfo: {
       status: ''
     },
-    currentPage: 'home',
+    appMenuCurrentPage: '/',
     signInType: '',
     rememberMe: false,
     inProgress: false,

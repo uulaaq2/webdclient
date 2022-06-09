@@ -5,13 +5,11 @@ import { useActor } from '@xstate/react'
 import { getLocalStorage } from 'functions/localStorage'
 import { stateValuesEqual } from 'xstate/lib/State'
 
-function useGetUserInfo(page) {
+function useGetUserInfo() {
   const globalServices = useContext(GlobalStateContext)  
   const { send } = globalServices.authService
   const [ state  ] = useActor(globalServices.authService)
-
-  state.context.currentPage = page
-  
+ 
   useEffect(() => {    
       if (state.context.userInfo.status !== 'ok') {
         const getTokenResult = getLocalStorage('token')
@@ -24,7 +22,6 @@ function useGetUserInfo(page) {
       }
   }, [])
 
-  console.log('state ', state.value)
   return {
     appStarted: state.context.appStarted,
     inProgress: state.context.inProgress,

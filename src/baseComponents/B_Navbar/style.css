@@ -94,11 +94,19 @@
   position: fixed;
   height: calc(100% - var(--nav-size));
   left: 0;
-  width: 250px;
   top: calc(var(--nav-size));
   background: white;
   padding: 1rem;
   z-index: 10000;
+}
+
+.appMenuItemActive:after {
+  left: -8px;
+    width: 4px;
+    height: 24px;
+    content: "";
+    background: var(--color-accent-fg);
+    border-radius: 6px;
 }
 
 .appMenuEnter {

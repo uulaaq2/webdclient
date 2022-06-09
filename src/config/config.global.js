@@ -9,28 +9,12 @@ module.exports = {
         name: 'IBOS'
     },
     theme: {
-        colors: {
-            appMenuBg: 'canvas.default',
-            appMenuItemBg: 'canvas.default',
-            appMenuItemFont: 'black',
-            appMenuItemHoverBg: 'canvas.inset',
-            appMenuItemHoverFont: 'accent.fg',
-            appMenuItemSelectedBg: 'accent.fg',
-            appMenuItemSelectedFont: 'canvas.default',
-
-            secMenuBg: 'canvas.default',
-            secMenuItemBg: 'canvas.default',
-            secMenuItemFont: 'black',
-            secMenuItemHoverBg: 'canvas.inset',
-            secMenuItemHoverFont: 'accent.fg',
-            secMenuItemSelectedBg: 'accent.fg',
-            secMenuItemSelectedFont: 'canvas.default',
-        }
+        
     },
     urls: {
         home: {
             path: '/',
-            name: 'Welcome'
+            name: 'Home'
         },
         user : {
             signIn: {
@@ -60,10 +44,19 @@ module.exports = {
         },
         settings: {
             name: 'Settings',
+            path: '/settings',
             groups: {
-                path: '/groups',
+                path: '/settings/groups',
                 name: 'Groups'
             },
+            departments: {
+                path: '/settings/departments',
+                name: 'Departments'
+            },  
+            users: {
+                path: '/settings/users',
+                name: 'Users'
+            },                      
             sites: {
                 path: '/sites',
                 name: 'Sites'

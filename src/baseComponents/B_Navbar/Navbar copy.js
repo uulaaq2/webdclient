@@ -1,13 +1,12 @@
 import style from './style.css'
 import React, { Fragment, useState, useContext } from 'react'
-import { useLocation  } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { CSSTransition } from 'react-transition-group'
 
 import config from 'config'
 import logo from 'images/ibos.png'
 import { checkMenuPermissions } from 'functions/user/checkPermissions'
 import useAppnavigate from 'hooks/useAppnavigate'
-import useAppLocation from 'hooks/useAppLocation'
 
 import { Box, ActionList, theme, Avatar, ActionMenu } from '@primer/react'
 import { HomeIcon, ThreeBarsIcon, ChevronLeftIcon, GearIcon, TriangleDownIcon } from '@primer/octicons-react'
@@ -53,23 +52,8 @@ export const HamburgerMenu = ( props ) => {
       
 
       <AppMenu open={appMenuOpen} setOpen={setAppMenuOpen}>
-        <ActionList>
-
-          <AppMenuItem 
-            setOpen={setAppMenuOpen} 
-            leadingVisual={<HomeIcon size={20} />} 
-            label={config.urls.home.name}            
-            goTo={config.urls.home.path}
-          />              
-          
-          <AppMenuItem 
-            setOpen={setAppMenuOpen} 
-            leadingVisual={<GearIcon size={20} />} 
-            label={config.urls.settings.name} 
-            goTo={config.urls.settings.path}
-          />
-
-        </ActionList>
+        <AppMenuItem setOpen={setAppMenuOpen} leftIcon={<HomeIcon size={20} />} label='Home' goTo='home' checkPermissionFor='home'></AppMenuItem>
+        <AppMenuItem setOpen={setAppMenuOpen} leftIcon={<GearIcon size={20} />} label='Settings' goTo='settings' checkPermissionFor='settings'></AppMenuItem>
       </AppMenu>
 
     </div>
@@ -92,7 +76,7 @@ export const AppMenu = ({ open, setOpen, children }) => {
     >
       <Box 
         sx={{
-          bg: 'canvas.default'
+          bg: config.theme.colors.appMenuBg
         }}
         className={style.appMenuWrapper} 
         borderRightColor="border.default" 
@@ -108,28 +92,38 @@ export const AppMenu = ({ open, setOpen, children }) => {
   )
 }
 
-export const AppMenuItem = ({ setOpen, leadingVisual, label, goTo }) => {
-  const appLocation = useAppLocation();    
+export const AppMenuItem = ({ setOpen, leftIcon, label, goTo, checkPermissionFor}) => {
   const globalServices = useContext(GlobalStateContext)  
   const [ state  ] = useActor(globalServices.authService)      
+  const permissionName = checkPermissionFor
   const appNavigate = useAppnavigate()
 
   function handleGoTo() {
     setOpen(false)    
-    if (appLocation.pieces[0] !== goTo) {
+    if (state.context.currentPage !== goTo) {
       appNavigate(goTo)
     }
   }
-  let checkPermissionsFor = goTo === '/' ? 'home' : goTo
 
-  if (checkMenuPermissions(checkPermissionsFor, state.context.userInfo.user.permissions)) {
+  if (checkMenuPermissions(permissionName, state.context.userInfo.user.permissions)) {
     return (    
-    <ActionList.Item 
-      onClick={() => handleGoTo()} active={appLocation.pieces[0] === goTo}
-    >
-      <ActionList.LeadingVisual>{leadingVisual}</ActionList.LeadingVisual>
-      {label}
-    </ActionList.Item>
+      <Box sx={{
+        display: 'flex',
+        alignItems: 'center',
+        padding: '0.5rem 0.5rem',
+        cursor: 'pointer',
+        borderColor: 'accent.emphasis',
+        bg: () => state.context.currentPage !== goTo ? config.theme.colors.appMenuItemBg : config.theme.colors.appMenuItemSelectedBg,
+        color: () => state.context.currentPage !== goTo ? config.theme.colors.appMenuItemFont : config.theme.colors.appMenuItemSelectedFont,
+        ':hover': {
+          bg: config.theme.colors.appMenuItemHoverBg,
+          color: config.theme.colors.appMenuItemHoverFont
+        }
+      }}
+      onClick={() => handleGoTo()}
+      >
+      <span style={{marginRight: '0.5rem'}}>{leftIcon}</span> <span>{label}</span>
+      </Box>
     )
   } else {
     return ''
@@ -155,13 +149,6 @@ export const UserAvatar = () => {
   function handleSignout() {
     send('SIGN_OUT')    
   }
-
-  const actionListItemStyle = {
-      
-    "&:hover": {
-      background: "#efefef"
-    },
-  }
   return (  
     <div className={style.avatarButtonWrapper}>
         <Avatar src={avatarPath} size={32} className={avatarButtonStyleNames} onClick={() => setOpen(!open)} ref={anchorRef} />
@@ -171,16 +158,10 @@ export const UserAvatar = () => {
             <ActionList>
               <ActionList.Group title={state.context.userInfo.user.Name}>
                 { checkMenuPermissions('userProfile', state.context.userInfo.user.permissions) &&
-                  <ActionList.Item >My profile</ActionList.Item>
+                  <ActionList.Item>My profile</ActionList.Item>
                 }
                 <ActionList.Divider />
-                <ActionList.Item onClick={handleSignout} 
-                  sx={{
-                    ':hover': {
-                      bg: 'red'
-                    }
-                  }}
-                >Sign out</ActionList.Item>
+                <ActionList.Item onClick={handleSignout}>Sign out</ActionList.Item>
               </ActionList.Group>
             </ActionList>
           </ActionMenu.Overlay>
