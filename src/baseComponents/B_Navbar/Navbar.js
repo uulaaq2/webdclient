@@ -15,6 +15,7 @@ import { HomeIcon, ThreeBarsIcon, ChevronLeftIcon, GearIcon, TriangleDownIcon } 
 import { GlobalStateContext } from 'state/globalState'
 import { useActor } from '@xstate/react'
 import { send } from 'process'
+import { getLocalStorage } from 'functions/localStorage';
 
 export const Navbar = (props) => {
   return (
@@ -46,7 +47,7 @@ export const HamburgerMenu = ( props ) => {
             cursor: 'pointer'
           }}
         >
-          {state.context.userInfo.user.Site}
+          {getLocalStorage('site').value}
         </Box>
       </span>
 
@@ -145,6 +146,8 @@ export const UserAvatar = () => {
   const [open, setOpen] = React.useState(false)
   const anchorRef = React.createRef()
 
+  const appNavigate = useAppnavigate()
+
   const avatarPath = config.api.urls.user.userProfile + '/' + state.context.userInfo.user.Email_Address + '/' + state.context.userInfo.user.Avatar
 
   let avatarButtonStyleNames = style.avatarButton
@@ -156,12 +159,12 @@ export const UserAvatar = () => {
     send('SIGN_OUT')    
   }
 
-  const actionListItemStyle = {
-      
-    "&:hover": {
-      background: "#efefef"
-    },
+  function handleSelectSite(site) {
+    const token = getLocalStorage('token').value
+    send('SIGN_IN', { requestType: 'signInWithToken', token, site })
+    appNavigate(config.urls.home.path)
   }
+
   return (  
     <div className={style.avatarButtonWrapper}>
         <Avatar src={avatarPath} size={32} className={avatarButtonStyleNames} onClick={() => setOpen(!open)} ref={anchorRef} />
@@ -169,19 +172,32 @@ export const UserAvatar = () => {
         <ActionMenu open={open} onOpenChange={setOpen} anchorRef={anchorRef}>
           <ActionMenu.Overlay>
             <ActionList>
-              <ActionList.Group title={state.context.userInfo.user.Name}>
-                { checkMenuPermissions('userProfile', state.context.userInfo.user.permissions) &&
-                  <ActionList.Item >My profile</ActionList.Item>
-                }
-                <ActionList.Divider />
-                <ActionList.Item onClick={handleSignout} 
-                  sx={{
-                    ':hover': {
-                      bg: 'red'
-                    }
-                  }}
-                >Sign out</ActionList.Item>
-              </ActionList.Group>
+              <ActionList.Item
+                className={style.userProfileMenuItemTitle}
+              >
+                {state.context.userInfo.user.Name}
+              </ActionList.Item>
+                            
+              { checkMenuPermissions('userProfile', state.context.userInfo.user.permissions) &&
+                <ActionList.Item className={style.userProfileMenuItem}>My profile</ActionList.Item>
+              }    
+                
+              { state.context.userInfo.user.Sites.split(',').map(site => (
+                  <ActionList.Item                         
+                    className={`${style.userProfileMenuItem} ${site === getLocalStorage('site').value ? style.userProfileMenuActive : ''}`}
+                    onClick={() => handleSelectSite(site)}
+                  >
+                    {site}
+                  </ActionList.Item>
+                ))                
+              }
+
+              <ActionList.Item 
+                className={style.userProfileMenuItem}
+                onClick={handleSignout}
+              >
+                Sign out
+              </ActionList.Item>
             </ActionList>
           </ActionMenu.Overlay>
         </ActionMenu>

@@ -1,7 +1,7 @@
 import { createMachine, interpret, assign } from 'xstate'
 import getUserWithCredentials from 'functions/user/getUserWithCredentials'
 import getUserWithToken from 'functions/user/getUserWithToken'
-import { setLocalStorage, deleteLocalStorage } from 'functions/localStorage'
+import { setLocalStorage, getLocalStorage, deleteLocalStorage } from 'functions/localStorage'
 import { setError, setSuccess, setWarning } from 'functions/setReply'
 import changeUserPassword from 'functions/user/changeUserPassword'
 
@@ -13,7 +13,6 @@ export const authMachine = createMachine({
     userInfo: {
       status: ''
     },
-    appMenuCurrentPage: '/',
     signInType: '',
     rememberMe: false,
     inProgress: false,
@@ -150,7 +149,7 @@ export const authMachine = createMachine({
       on: {
         SIGN_IN: {
           target: 'gettingUserInfo',          
-          cond: (context) => context.userInfo.status !== 'ok'
+          //cond: (context) => context.userInfo.status !== 'ok'
         },
 
         SIGN_OUT: {
@@ -184,7 +183,7 @@ service.start()
 // get user
 async function doGetUser(context, event) {
   try {        
-    const { requestType = '', email = undefined, password = undefined, rememberMe = undefined, token = undefined } = event  
+    const { requestType = '', email = undefined, password = undefined, rememberMe = undefined, site = undefined, token = undefined } = event  
     let signInType    
     let getUserResult
     let rememberMeTemp = rememberMe
@@ -197,7 +196,7 @@ async function doGetUser(context, event) {
     if (requestType === 'signInWithToken') {
       signInType = 'token'
       if (token) {
-        getUserResult = await getUserWithToken(token)
+        getUserResult = await getUserWithToken(token, site)
         rememberMeTemp = getUserResult.rememberMe        
       } 
     }
@@ -210,6 +209,25 @@ async function doGetUser(context, event) {
 
     if (getUserResult.status === 'ok') {
       setLocalStorage('email_address', getUserResult.user.Email_Address, true)
+
+      const sites = getUserResult.user.Sites.split(',')
+      let localStorageSite
+
+      if (!site) {
+        localStorageSite = sites[0]
+      } else {
+        if (sites.length < 2) {
+          localStorageSite = sites[0]
+        } else {
+          if (sites.includes(site)) {
+            localStorageSite = site
+          } else {
+            localStorageSite = sites[0]
+          }
+        }
+      }
+
+      setLocalStorage('site', localStorageSite)
     }
 
     return {

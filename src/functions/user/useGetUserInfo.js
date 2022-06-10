@@ -3,7 +3,6 @@ import { setScuess, setWarning, setError } from 'functions/setReply'
 import { GlobalStateContext } from 'state/globalState'
 import { useActor } from '@xstate/react'
 import { getLocalStorage } from 'functions/localStorage'
-import { stateValuesEqual } from 'xstate/lib/State'
 
 function useGetUserInfo() {
   const globalServices = useContext(GlobalStateContext)  
@@ -15,7 +14,7 @@ function useGetUserInfo() {
         const getTokenResult = getLocalStorage('token')
         const token = getTokenResult.status === 'ok' ? getTokenResult.value : ''      
         if (token) {
-          send('SIGN_IN', { requestType: 'signInWithToken', token })
+          send('SIGN_IN', { requestType: 'signInWithToken', token, site: getLocalStorage('site').value })
         } else {
           send('FAIL')
         }

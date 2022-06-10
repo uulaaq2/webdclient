@@ -100,13 +100,27 @@
   z-index: 10000;
 }
 
-.appMenuItemActive:after {
-  left: -8px;
-    width: 4px;
-    height: 24px;
-    content: "";
-    background: var(--color-accent-fg);
-    border-radius: 6px;
+.userProfileMenuItem:hover {
+  background: var(--color-accent-fg) !important;
+  color: var(--color-canvas-default) !important;
+}
+
+.userProfileMenuItemTitle {
+  font-size: 0.7rem !important;
+  font-weight: 500 !important;
+  color: var(--color-canvas-muted) !important;
+}
+
+.userProfileMenuActive:after {
+  position: absolute;
+  content: '';
+  left: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 5px;
+  width: 5px;
+  border-radius: 50%;
+  background: var(--color-accent-fg);
 }
 
 .appMenuEnter {

@@ -21,6 +21,7 @@ const index = () => {
   const globalServices = useContext(GlobalStateContext)  
   const { send } = globalServices.authService
   const [ state  ] = useActor(globalServices.authService)    
+  const permissions = state.context.userInfo.user.permissions
 
   return (
   <PageLayout>
@@ -53,15 +54,15 @@ const index = () => {
     </PageLayout.Pane>
 
     <PageLayout.Content>
-      {appLocation.fullPath === '/settings/groups' &&
+      {appLocation.fullPath === '/settings/groups' && checkMenuPermissions(appLocation.fullPath, permissions) &&
         <PC_Groups />
       }
 
-      {appLocation.fullPath === '/settings/departments' &&
+      {appLocation.fullPath === '/settings/departments' && checkMenuPermissions(appLocation.fullPath, permissions) &&
         <PC_Departments />
       }
 
-      {appLocation.fullPath === '/settings/users' &&
+      {appLocation.fullPath === '/settings/users' && checkMenuPermissions(appLocation.fullPath, permissions) &&
         <PC_Users />
       }
     </PageLayout.Content>

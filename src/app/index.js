@@ -14,6 +14,7 @@ import SignIn from 'pages/signIn'
 import SignOut from 'pages/signOut'
 import ChangePassword from 'pages/public/changePassword'
 import Settings from 'pages/protected/settings'
+import Redirect from 'pages/redirect'
 
 import ProtectedHome from 'pages/protected/home'
 
@@ -32,40 +33,42 @@ const App = () => {
             <Route 
               path="/public"
               element={
-                <PublicRoute path element={<PublicHome />} />
+                <PublicRoute element={<PublicHome />} />
               }
             />
 
             <Route 
               path="/" 
               element={
-                <PrivateRoute path element={<ProtectedHome />} />
+                <PrivateRoute element={<ProtectedHome />} />
               }            
             />
+
+            <Route exact path="/redirect" element={<Redirect />} />                                            
 
             <Route 
               path="/settings" 
               element={
-                <PrivateRoute path element={<Settings />} />
+                <PrivateRoute element={<Settings />} />
               }            
             />
 
             <Route 
               path="/settings/groups" 
               element={
-                <PrivateRoute path element={<Settings />} />
+                <PrivateRoute element={<Settings />} />
               }            
             />            
             <Route 
               path="/settings/departments" 
               element={
-                <PrivateRoute path element={<Settings />} />
+                <PrivateRoute element={<Settings />} />
               }            
             />            
             <Route 
               path="/settings/users" 
               element={
-                <PrivateRoute path element={<Settings />} />
+                <PrivateRoute element={<Settings />} />
               }            
             />            
 
@@ -73,7 +76,7 @@ const App = () => {
             <Route 
               path="/sites" 
               element={
-                <PrivateRoute path element={<Sites />} />
+                <PrivateRoute element={<Sites />} />
               }            
             />
 

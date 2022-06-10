@@ -1,11 +1,12 @@
 import { setSuccess, setWarning, setError } from "functions/setReply"
 import { fetchOptions, baseFetch } from "functions/baseFetch"
 import config from 'config'
+import { getLocalStorage } from 'functions/localStorage';
 
-async function getUserWithToken(token) {  
+async function getUserWithToken(token, site = undefined) {  
   try {
     const url = config.api.urls.user.verifyToken
-    const data = {token, includeUserData: true}
+    const data = {token, site}
     const accepts = fetchOptions.headers.accepts.json
 
     const getUserResult = await baseFetch('POST', url, data, accepts)

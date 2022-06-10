@@ -22,7 +22,7 @@ const index = ({ path, element }) => {
       { (userInfo.inProgress) && <B_Pageloading />}
       { (userInfo.success && !userInfo.inProgress && userInfo.appStarted) && 
         <>
-          <B_Navbar path/>
+          <B_Navbar />
           { element }
         </>   
       }
