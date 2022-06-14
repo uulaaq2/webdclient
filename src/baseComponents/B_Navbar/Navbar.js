@@ -1,7 +1,7 @@
 import style from './style.css'
 import React, { Fragment, useState, useContext } from 'react'
 import { useLocation  } from 'react-router-dom'
-import { CSSTransition } from 'react-transition-group'
+import { animated, useSpring } from 'react-spring'
 
 import config from 'config'
 import logo from 'images/ibos.png'
@@ -9,8 +9,8 @@ import { checkMenuPermissions } from 'functions/user/checkPermissions'
 import useAppnavigate from 'hooks/useAppnavigate'
 import useAppLocation from 'hooks/useAppLocation'
 
-import { Box, ActionList, theme, Avatar, ActionMenu } from '@primer/react'
-import { HomeIcon, ThreeBarsIcon, ChevronLeftIcon, GearIcon, TriangleDownIcon } from '@primer/octicons-react'
+import { Box, ActionList, theme, Avatar, ActionMenu, Link } from '@primer/react'
+import { HomeIcon, GlobeIcon, ThreeBarsIcon, ChevronLeftIcon, GearIcon, TriangleDownIcon, TriangleUpIcon } from '@primer/octicons-react'
 
 import { GlobalStateContext } from 'state/globalState'
 import { useActor } from '@xstate/react'
@@ -54,23 +54,7 @@ export const HamburgerMenu = ( props ) => {
       
 
       <AppMenu open={appMenuOpen} setOpen={setAppMenuOpen}>
-        <ActionList>
-
-          <AppMenuItem 
-            setOpen={setAppMenuOpen} 
-            leadingVisual={<HomeIcon size={20} />} 
-            label={config.urls.home.name}            
-            goTo={config.urls.home.path}
-          />              
-          
-          <AppMenuItem 
-            setOpen={setAppMenuOpen} 
-            leadingVisual={<GearIcon size={20} />} 
-            label={config.urls.settings.name} 
-            goTo={config.urls.settings.path}
-          />
-
-        </ActionList>
+          <AppMenuItems />
       </AppMenu>
 
     </div>
@@ -78,64 +62,121 @@ export const HamburgerMenu = ( props ) => {
 }
 
 export const AppMenu = ({ open, setOpen, children }) => {
+  const animateStyles = useSpring({
+
+  })
+
+  const sideBarStyle = {
+      position: 'absolute',
+      left: '0',
+      top: 'calc(var(--nav-size))',
+      height: 'calc(100% - var(--nav-size))',
+      background: 'var(--color-canvas-default)',
+      padding: '1rem',
+      zIndex: '10000',
+      borderRight: '1px solid var(--color-border-default)',
+      display: open ? 'block' : 'none'
+    }
+
   return (
-    <CSSTransition
-      in={open}
-      timeout={100}
-      unmountOnExit   
-      classNames={{
-          enter: style.appMenuEnter,          
-          enterActive: style.appMenuEnterActive,          
-          exit: style.appMenuExit,
-          exitActive: style.appMenuExitActive
-        }
-      }   
+    <animated.div    
+      style={{
+        ...sideBarStyle,
+        ...animateStyles
+      }}
     >
-      <Box 
-        sx={{
-          bg: 'canvas.default'
-        }}
-        className={style.appMenuWrapper} 
-        borderRightColor="border.default" 
-        borderTopWidth={0} 
-        borderRightWidth={1} 
-        borderBottomWidth={0} 
-        borderLeft={0} 
-        borderStyle="solid"
-      >
-        { children }
-      </Box>
-    </CSSTransition>    
+      {children}
+    </animated.div>
   )
 }
 
-export const AppMenuItem = ({ setOpen, leadingVisual, label, goTo }) => {
+export const AppMenuItems = () => {
   const appLocation = useAppLocation();    
   const globalServices = useContext(GlobalStateContext)  
   const [ state  ] = useActor(globalServices.authService)      
-  const appNavigate = useAppnavigate()
+  const appNavigate = useAppnavigate() 
 
-  function handleGoTo() {
-    setOpen(false)    
+  const [settingsOpen, setSettingsOpen] = useState(true)
+  
+
+  function handleGoTo(goTo) {
     if (appLocation.pieces[0] !== goTo) {
       appNavigate(goTo)
     }
   }
-  let checkPermissionsFor = goTo === '/' ? 'home' : goTo
 
-  if (checkMenuPermissions(checkPermissionsFor, state.context.userInfo.user.permissions)) {
-    return (    
-    <ActionList.Item 
-      onClick={() => handleGoTo()} active={appLocation.pieces[0] === goTo}
-    >
-      <ActionList.LeadingVisual>{leadingVisual}</ActionList.LeadingVisual>
-      {label}
-    </ActionList.Item>
-    )
-  } else {
-    return ''
-  }
+  console.log(appLocation)
 
+  return (         
+    <ActionList>
+
+      <ActionList.Item 
+        onClick={() => handleGoTo(config.urls.home.path)}
+        active={appLocation.pieces[0] === config.urls.home.path}
+        className={`${style.fontWeightNormal} ${style.noBackground}`}
+      >
+        <ActionList.LeadingVisual><HomeIcon /></ActionList.LeadingVisual>
+        {config.urls.home.name}
+      </ActionList.Item>
+
+      <ActionList.Item 
+        onClick={() => handleGoTo(config.urls.public.path)}
+        active={appLocation.pieces[0] === config.urls.public.path}
+        className={`${style.fontWeightNormal} ${style.noBackground}`}
+      >
+        <ActionList.LeadingVisual><GlobeIcon /></ActionList.LeadingVisual>
+        {config.urls.public.name}
+      </ActionList.Item>
+
+      { checkMenuPermissions(config.urls.settings.path, state.context.userInfo.user.permissions) &&
+       <>
+       <ActionList.Item 
+          //onClick={() => setSettingsOpen(!settingsOpen)}
+          onClick={() => handleGoTo(config.urls.settings.path)}
+          active={appLocation.pieces[0] === config.urls.settings.path}
+          className={`${style.fontWeightNormal} ${style.noBackground}`}
+        >
+          <ActionList.LeadingVisual><GearIcon /></ActionList.LeadingVisual>
+          {config.urls.settings.name}
+          <ActionList.TrailingVisual>{ appLocation.pieces[0] !== config.urls.settings.path ? <TriangleDownIcon /> : <TriangleUpIcon /> }</ActionList.TrailingVisual>
+
+        </ActionList.Item>
+
+        { appLocation.pieces[0] === config.urls.settings.path &&
+          <>
+            <Box className={style.subMenuWrapper}>
+              <ActionList.Item
+                onClick={() => handleGoTo(config.urls.settings.users.path)}
+                className={`${appLocation.fullPath === config.urls.settings.users.path ? style.subMenuActive : ''} ${style.noBackground}`}
+              >
+                {config.urls.settings.users.name}
+              </ActionList.Item>
+            </Box>
+
+            <Box className={style.subMenuWrapper}>
+            <ActionList.Item
+                onClick={() => handleGoTo(config.urls.settings.departments.path)}
+                className={`${appLocation.fullPath === config.urls.settings.departments.path ? style.subMenuActive : ''} ${style.noBackground}`}
+              >
+                {config.urls.settings.departments.name}
+              </ActionList.Item>
+            </Box>
+
+            <Box className={style.subMenuWrapper}>
+            <ActionList.Item
+                onClick={() => handleGoTo(config.urls.settings.groups.path)}
+                className={`${appLocation.fullPath === config.urls.settings.groups.path ? style.subMenuActive : ''} ${style.noBackground}`}
+              >
+                {config.urls.settings.groups.name}
+              </ActionList.Item>
+            </Box>
+          </>
+        }
+        </>
+      }
+      
+    </ActionList>      
+    )  
 }
 
 export const UserAvatar = () => {
@@ -182,10 +223,11 @@ export const UserAvatar = () => {
                 <ActionList.Item className={style.userProfileMenuItem}>My profile</ActionList.Item>
               }    
                 
-              { state.context.userInfo.user.Sites.split(',').map(site => (
+              { state.context.userInfo.user.Sites.split(',').map((site, i) => (
                   <ActionList.Item                         
                     className={`${style.userProfileMenuItem} ${site === getLocalStorage('site').value ? style.userProfileMenuActive : ''}`}
                     onClick={() => handleSelectSite(site)}
+                    key={i}
                   >
                     {site}
                   </ActionList.Item>

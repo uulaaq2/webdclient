@@ -8,3 +8,11 @@ body {
   background: #f6f8fa;
 }
 
+.customBox {
+  background-color: var(--color-canvas-default);
+  border-color: var(--color-border-default);
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 6px;
+  padding: 20px 15px;
+}

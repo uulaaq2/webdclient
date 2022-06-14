@@ -92,12 +92,13 @@
 
 .appMenuWrapper {
   position: fixed;
-  height: calc(100% - var(--nav-size));
   left: 0;
   top: calc(var(--nav-size));
-  background: white;
+  height: calc(100% - var(--nav-size));
+  background: yellow;
   padding: 1rem;
   z-index: 10000;
+  border: 5px solid black;
 }
 
 .userProfileMenuItem:hover {
@@ -136,4 +137,28 @@
 .appMenuExitActive {
   left: -110%;
   transition: all 100ms ease;
+}
+
+.subMenuWrapper {
+  margin-left: 35px;
+}
+
+.subMenuActive:before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-accent-fg);
+}
+
+.noBackground {
+  background: transparent !important;
+}
+
+.fontWeightNormal {
+  font-weight: normal !important;
 }

@@ -14,6 +14,7 @@ import SignIn from 'pages/signIn'
 import SignOut from 'pages/signOut'
 import ChangePassword from 'pages/public/changePassword'
 import Settings from 'pages/protected/settings'
+import Groups from 'pages/protected/settings/groups'
 import Redirect from 'pages/redirect'
 
 import ProtectedHome from 'pages/protected/home'
@@ -56,7 +57,7 @@ const App = () => {
             <Route 
               path="/settings/groups" 
               element={
-                <PrivateRoute element={<Settings />} />
+                <PrivateRoute element={<Groups />} />
               }            
             />            
             <Route 
