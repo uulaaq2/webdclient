@@ -6,7 +6,7 @@ import { getLocalStorage } from 'functions/localStorage';
 async function getUserWithToken(token, site = undefined) {  
   try {
     const url = config.api.urls.user.verifyToken
-    const data = {token, site}
+    const data = {token}
     const accepts = fetchOptions.headers.accepts.json
 
     const getUserResult = await baseFetch('POST', url, data, accepts)

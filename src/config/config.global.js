@@ -74,6 +74,10 @@ module.exports = {
                 verifyToken: apiServer + '/user/me/verifytoken',
                 userProfile: apiServer + '/users'
             },
+            groups: {
+                get: apiServer + '/groups/get',
+                new: apiServer + '/groups/new',
+            },
             getDrawings: apiServer + '/getdrawings',
             verifyToken: apiServer + '/verifytoken',
         }

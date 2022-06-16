@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { setSuccess, setWarning, setError } from 'functions/setReply'
+import { getLocalStorage } from 'functions/localStorage';
 
 export const fetchOptions = {
   headers: {
@@ -19,6 +20,8 @@ export async function baseFetch(method, url, data = {}, accepts = {}) {
       "Access-Control-Allow-Origin": "*"
     }
 
+    data.site = getLocalStorage('site').value
+    console.log(data)
     const requestResult = await axios({ method, url, data, headers })
 
     return requestResult.data

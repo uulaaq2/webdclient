@@ -1,32 +1,37 @@
 import appStyle from 'app/style.css'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import pageInitial from 'functions/pageInitial'
-import B_MainSectionTitle from 'baseComponents/B_MainSectionTitle'
 import config from 'config'
-import { Box, ButtonGroup, Button, PageLayout } from '@primer/react'
-import B_Table from 'baseComponents/B_Table'
+import { Box, ButtonGroup, Button, PageLayout, Heading, Breadcrumbs } from '@primer/react'
+import GroupList from './GroupList'
+import NewGroup from './NewGroup'
+
+import { useMachine } from '@xstate/react'
+import { groupsMachine } from 'state/groupsMachine'
 
 const index = ({ showTitle = false }) => {
-  pageInitial( {pageName: 'settings.groups'} )
+  pageInitial( {pageName: 'settings.groups'} ) 
+  const [current, send] = useMachine(groupsMachine)
+  const [mode, setMode] = useState('list')
+  
+  useEffect(() => {
+    send('GET_GROUPS', {name: '', orderByFields: ''})
+  }, [])
+
+  useEffect(() => {
+    console.log(mode)
+  }, [mode])
+
   return (
     <>
-      <PageLayout>
+      <PageLayout>        
         <PageLayout.Content>
-          <Box className={appStyle.customBox}>
-            <Box>
-              <ButtonGroup>
-                <Button>New group</Button>              
-              </ButtonGroup>
-            </Box>
-
-            <Box sx={{marginTop: '10px'}} className='bHeader'>
-              <B_Table
-                headers={['Name', 'Description', 'Date', 'User']}
-              >
-
-              </B_Table>
-            </Box>
-          </Box>
+          { mode === 'new' && 
+            <NewGroup current={current} send={send} setMode={setMode}/>
+          }
+          { mode === 'list' && 
+            <GroupList current={current} setMode={setMode} />
+          }
         </PageLayout.Content>
       </PageLayout>
     </>

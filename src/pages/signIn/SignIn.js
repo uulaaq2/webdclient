@@ -94,7 +94,9 @@ const SignIn = () => {
               error={inputs.email.errorText}
               type={inputs.email.type}
               maxLength={inputs.email.maxLength}
-              inputRef={inputs.email.ref}              
+              inputRef={inputs.email.ref}   
+              required      
+              labelSX={{fontWeight: 'normal'}}        
             />
           </FormControl>
 
@@ -105,7 +107,9 @@ const SignIn = () => {
               error={inputs.password.errorText}
               type={inputs.password.type}
               maxLength={inputs.password.maxLength}
-              inputRef={inputs.password.ref}            
+              inputRef={inputs.password.ref}     
+              required
+              labelSX={{fontWeight: 'normal'}}       
             />
           </FormControl>
 

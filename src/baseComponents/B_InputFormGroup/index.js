@@ -9,12 +9,15 @@ const index = ({
   error = '', 
   maxLength = 255,
   gap = '0.5rem',
-  inputRef = null
+  inputRef = null,
+  contrast = false,
+  required = false,
+  labelSX = {}
 }) => {
   return (
-    <FormControl sx={{width: '100%'}}>
-        <FormControl.Label htmlFor={id} sx={{ width: '100%', fontWeight: 'normal', marginBottom: {gap} }} >{label}</FormControl.Label>
-        <TextInput max={maxLength} type={type} sx={{ width: '100%', marginBottom: {gap} }} ref={inputRef} />
+    <FormControl sx={{width: '100%'}} required={required}>
+        <FormControl.Label htmlFor={id} sx={{ width: '100%', marginBottom: {gap}, ...labelSX}}  >{label}</FormControl.Label>
+        <TextInput max={maxLength} type={type} sx={{ width: '100%', marginBottom: {gap} }} ref={inputRef} contrast={contrast} />
         {error && (
           <FormControl.Validation id={`input-validation-${id}`} variant="error">
             {error}
