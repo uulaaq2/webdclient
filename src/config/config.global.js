@@ -47,7 +47,10 @@ module.exports = {
             path: '/settings',
             groups: {
                 path: '/settings/groups',
-                name: 'Groups'
+                name: 'Groups',
+                new: {
+                    name: 'New group'
+                }
             },
             departments: {
                 path: '/settings/departments',

@@ -11,6 +11,12 @@ export const validateInputFields = (inputs) => {
       errorText = ''
       notChecked = true
       if (inputs.hasOwnProperty(key)) {
+          if (inputs[key].hasOwnProperty('errorText')) {
+            if (inputs[key]['errorText']) {
+              console.log('error text exists', inputs[key])
+              inputs[key]['errorText'] = '123'
+            }
+          }
           if (inputs[key].validate) {
             let currentKey= inputs[key]
   
@@ -18,7 +24,7 @@ export const validateInputFields = (inputs) => {
             
             if (currentKey.required) {
               if (inputValue.replace(/\s+/g, '') === '') {
-                errorText = currentKey.label + ' is required'
+                errorText = 'required'
                 erroredElements.push(currentKey.ref.current)
               }
   
@@ -68,4 +74,8 @@ export const clearErrors = (inputs) => {
         }
     }
   }
+}
+
+export const addError = (field, error) => {
+  field['errorText'] = error  
 }

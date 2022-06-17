@@ -21,8 +21,9 @@ export async function baseFetch(method, url, data = {}, accepts = {}) {
     }
 
     data.site = getLocalStorage('site').value
-    console.log(data)
+
     const requestResult = await axios({ method, url, data, headers })
+    console.log(requestResult)
 
     return requestResult.data
   } catch (error) {

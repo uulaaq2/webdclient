@@ -1,5 +1,5 @@
 import style from './style.css'
-import React, { Fragment, useState, useContext } from 'react'
+import React, { Fragment, useState, useContext, useEffect } from 'react'
 import { useLocation  } from 'react-router-dom'
 import { animated, useSpring } from 'react-spring'
 
@@ -9,7 +9,7 @@ import { checkMenuPermissions } from 'functions/user/checkPermissions'
 import useAppnavigate from 'hooks/useAppnavigate'
 import useAppLocation from 'hooks/useAppLocation'
 
-import { Box, ActionList, theme, Avatar, ActionMenu, Link } from '@primer/react'
+import { Box, ActionList, theme, Avatar, ActionMenu, Link, Autocomplete } from '@primer/react'
 import { HomeIcon, GlobeIcon, ThreeBarsIcon, ChevronLeftIcon, GearIcon, TriangleDownIcon, TriangleUpIcon } from '@primer/octicons-react'
 
 import { GlobalStateContext } from 'state/globalState'
@@ -61,28 +61,27 @@ export const HamburgerMenu = ( props ) => {
   )
 }
 
-export const AppMenu = ({ open, setOpen, children }) => {
-  const animateStyles = useSpring({
-
+export const AppMenu = ({ open, setOpen, children }) => {    
+  const styles = useSpring({
+    left: open ? 0 : -220
   })
 
-  const sideBarStyle = {
-      position: 'absolute',
-      left: '0',
-      top: 'calc(var(--nav-size))',
-      height: 'calc(100% - var(--nav-size))',
-      background: 'var(--color-canvas-default)',
-      padding: '1rem',
-      zIndex: '10000',
-      borderRight: '1px solid var(--color-border-default)',
-      display: open ? 'block' : 'none'
-    }
+  const sideBarStyles = {
+    position: 'absolute',
+    left: '0',
+    top: 'calc(var(--nav-size))',
+    height: 'calc(100% - var(--nav-size))',
+    background: 'var(--color-canvas-default)',
+    padding: '1rem',
+    zIndex: '10000',
+    borderRight: '1px solid var(--color-border-default)',
+  }
 
   return (
     <animated.div    
       style={{
-        ...sideBarStyle,
-        ...animateStyles
+        ...sideBarStyles,
+        ...styles
       }}
     >
       {children}
@@ -104,8 +103,6 @@ export const AppMenuItems = () => {
       appNavigate(goTo)
     }
   }
-
-  console.log(appLocation)
 
   return (         
     <ActionList>

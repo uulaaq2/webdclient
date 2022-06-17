@@ -9,9 +9,7 @@ async function getGroups(name) {
     const accepts = fetchOptions.headers.accepts.json
 
     const result = await baseFetch('POST', url, data, accepts)
-
-    console.log(result)
-
+    
     return result
   } catch (error) {
     return setError(error)
