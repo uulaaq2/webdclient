@@ -54,6 +54,8 @@ const setError = (error, data = null) => {
         reply.stack = error.stack
     }
 
+    reply.stack = error.stack
+
     if (data) {
         reply.data = data
     }

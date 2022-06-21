@@ -5,7 +5,7 @@ import { animated, useSpring } from 'react-spring'
 
 import config from 'config'
 import logo from 'images/ibos.png'
-import { checkMenuPermissions } from 'functions/user/checkPermissions'
+import { checkPermission } from 'functions/user/checkPermission'
 import useAppnavigate from 'hooks/useAppnavigate'
 import useAppLocation from 'hooks/useAppLocation'
 
@@ -94,6 +94,7 @@ export const AppMenuItems = () => {
   const globalServices = useContext(GlobalStateContext)  
   const [ state  ] = useActor(globalServices.authService)      
   const appNavigate = useAppnavigate() 
+  const permissions = state.context.userInfo.permissions
 
   const [settingsOpen, setSettingsOpen] = useState(true)
   
@@ -125,7 +126,7 @@ export const AppMenuItems = () => {
         {config.urls.public.name}
       </ActionList.Item>
 
-      { checkMenuPermissions(config.urls.settings.path, state.context.userInfo.user.permissions) &&
+      { checkMenuPermission(config.urls.settings.id, permissions) &&
        <>
        <ActionList.Item 
           //onClick={() => setSettingsOpen(!settingsOpen)}

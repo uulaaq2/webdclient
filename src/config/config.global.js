@@ -32,7 +32,8 @@ module.exports = {
         },
         drawings: { 
             path: '/drawings',
-            name: 'Loop PDFs'
+            name: 'Loop PDFs',
+            permissionName: 'Drawings'
         },
         error: {
             path: '/error',
@@ -43,12 +44,15 @@ module.exports = {
             name: 'Public'
         },
         settings: {
+            id: 'Settings',
             name: 'Settings',
             path: '/settings',
             groups: {
+                id: 'Groups',
                 path: '/settings/groups',
                 name: 'Groups',
                 new: {
+                    id: 'New group',
                     name: 'New group'
                 }
             },

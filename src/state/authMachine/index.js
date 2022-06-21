@@ -183,7 +183,7 @@ service.start()
 // get user
 async function doGetUser(context, event) {
   try {        
-    const { requestType = '', email = undefined, password = undefined, rememberMe = undefined, site = undefined, token = undefined } = event  
+    const { requestType = '', email = undefined, password = undefined, rememberMe = undefined } = event  
     let signInType    
     let getUserResult
     let rememberMeTemp = rememberMe
@@ -195,21 +195,30 @@ async function doGetUser(context, event) {
     
     if (requestType === 'signInWithToken') {
       signInType = 'token'
-      if (token) {
-        getUserResult = await getUserWithToken(token, site)
+      const token = getLocalStorage('token')
+      if (token.status === 'ok') {
+        getUserResult = await getUserWithToken()
         rememberMeTemp = getUserResult.rememberMe        
       } 
     }
 
     if (requestType === 'changeUserPassword') {
       signInType = 'credentials'      
-      getUserResult = await changeUserPassword(token, password)
+      getUserResult = await changeUserPassword(password)
       rememberMeTemp = getUserResult.rememberMe
     }
 
     if (getUserResult.status === 'ok') {
       setLocalStorage('email_address', getUserResult.user.Email_Address, true)
 
+      const getSiteResult = getLocalStorage('site')
+      let site
+      if (getSiteResult.status === 'ok') {
+        site = getSiteResult.value
+      } else {
+        site = ''
+      }
+      
       const sites = getUserResult.user.Sites.split(',')
       let localStorageSite
 

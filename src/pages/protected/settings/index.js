@@ -7,7 +7,7 @@ import pageInitial from 'functions/pageInitial'
 import useAppnavigate from 'hooks/useAppnavigate'
 import useAppLocation from 'hooks/useAppLocation'
 
-import { checkMenuPermissions } from 'functions/user/checkPermissions';
+import { checkPermission } from 'functions/user/checkPermission';
 
 import { GlobalStateContext } from 'state/globalState'
 import { useActor } from '@xstate/react'

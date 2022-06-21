@@ -20,10 +20,15 @@ export async function baseFetch(method, url, data = {}, accepts = {}) {
       "Access-Control-Allow-Origin": "*"
     }
 
-    data.site = getLocalStorage('site').value
+    data.token = getLocalStorage('token').value
+    const site = getLocalStorage('site')
+    if (site.status === 'ok') {
+      data.site = getLocalStorage('site').value
+    }
+
+    console.log(data)
 
     const requestResult = await axios({ method, url, data, headers })
-    console.log(requestResult)
 
     return requestResult.data
   } catch (error) {

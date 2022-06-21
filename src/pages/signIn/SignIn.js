@@ -62,7 +62,11 @@ const SignIn = () => {
     }
   }, [])
 
-
+  useEffect(() => {
+    if (erroredInputs[0]) {
+      erroredInputs[0].focus()
+    }
+  }, [erroredInputs])
 
   async function handleSignin() {
     const validateInputFieldsResult = validateInputFields(inputs)
@@ -82,7 +86,7 @@ const SignIn = () => {
   }
 
   return (
-    <div className='d-flex flex-column flex-justify-center flex-items-center mt-5'>
+    <div className='d-flex flex-column flex-justify-center flex-items-center mt-5 '>
       <img src={logo} alt={config.app.name} width={90} className='mb-4'/>
       <Heading sx={{fontSize: '1.5rem', fontWeight: 'normal', mb: 3}}>Welcome</Heading>
       <div className='box col-11 col-sm-8 col-md-6 col-lg-5 col-xl-3 p-3 color-bg-subtle border'>
@@ -125,7 +129,8 @@ const SignIn = () => {
 
           { (state.context.userInfo.status === 'accountIsExpired' || state.context.userInfo.status === 'warning' || state.context.userInfo.status === 'error') &&
                 <>
-                  <B_Formerror message={state.context.userInfo.message} />
+                  { console.log(state.context.userInfo)}
+                  <B_Formerror error={state.context.userInfo} />
                 </>
               }
         </Box>
