@@ -1,4 +1,4 @@
-const apiServer = 'http://AUBOTD9X94HD2:3002'
+const apiServer = 'http://localhost:3002'
 
 module.exports = {
     showClientDevelopmentErros: true,
@@ -44,11 +44,11 @@ module.exports = {
             name: 'Public'
         },
         settings: {
-            id: 'Settings',
+            id: 'settings',
             name: 'Settings',
             path: '/settings',
             groups: {
-                id: 'Groups',
+                id: 'groups',
                 path: '/settings/groups',
                 name: 'Groups',
                 new: {

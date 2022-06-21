@@ -14,7 +14,7 @@ const index = ({ error }) => {
       <div style={{overflow: 'hidden', maxWidth: '100%'}}>        
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', }}>
             <div style={{display: 'flex', alignItems: 'center'}}><AlertIcon />{error.message}</div>
-          { showClientDevelopmentErros && 
+          { showClientDevelopmentErros && error.stack && 
               <button className="btn-link" type="button" onClick={() => setShowErrorStack(!showErrorStack)}>
                 Details { !showErrorStack ? <TriangleDownIcon /> : <TriangleUpIcon /> }
               </button>

@@ -5,7 +5,7 @@ import { animated, useSpring } from 'react-spring'
 
 import config from 'config'
 import logo from 'images/ibos.png'
-import { checkPermission } from 'functions/user/checkPermission'
+import { checkMenuPermission, checkPermission } from 'functions/user/checkPermission'
 import useAppnavigate from 'hooks/useAppnavigate'
 import useAppLocation from 'hooks/useAppLocation'
 
@@ -14,7 +14,6 @@ import { HomeIcon, GlobeIcon, ThreeBarsIcon, ChevronLeftIcon, GearIcon, Triangle
 
 import { GlobalStateContext } from 'state/globalState'
 import { useActor } from '@xstate/react'
-import { send } from 'process'
 import { getLocalStorage } from 'functions/localStorage';
 
 export const Navbar = (props) => {
@@ -94,10 +93,8 @@ export const AppMenuItems = () => {
   const globalServices = useContext(GlobalStateContext)  
   const [ state  ] = useActor(globalServices.authService)      
   const appNavigate = useAppnavigate() 
-  const permissions = state.context.userInfo.permissions
-
+  const permissions = state.context.userInfo.user.permissions
   const [settingsOpen, setSettingsOpen] = useState(true)
-  
 
   function handleGoTo(goTo) {
     if (appLocation.pieces[0] !== goTo) {
@@ -125,7 +122,7 @@ export const AppMenuItems = () => {
         <ActionList.LeadingVisual><GlobeIcon /></ActionList.LeadingVisual>
         {config.urls.public.name}
       </ActionList.Item>
-
+      
       { checkMenuPermission(config.urls.settings.id, permissions) &&
        <>
        <ActionList.Item 
@@ -142,23 +139,27 @@ export const AppMenuItems = () => {
 
         { appLocation.pieces[0] === config.urls.settings.path &&
           <>
-            <Box className={style.subMenuWrapper}>
+            { checkMenuPermission(config.urls.settings.users.id, permissions) &&
+              <Box className={style.subMenuWrapper}>
+                <ActionList.Item
+                  onClick={() => handleGoTo(config.urls.settings.users.path)}
+                  className={`${appLocation.fullPath === config.urls.settings.users.path ? style.subMenuActive : ''} ${style.noBackground}`}
+                >
+                  {config.urls.settings.users.name}
+                </ActionList.Item>
+              </Box>
+            }
+            
+            { checkMenuPermission(config.urls.settings.users.id, permissions) &&
+              <Box className={style.subMenuWrapper}>
               <ActionList.Item
-                onClick={() => handleGoTo(config.urls.settings.users.path)}
-                className={`${appLocation.fullPath === config.urls.settings.users.path ? style.subMenuActive : ''} ${style.noBackground}`}
-              >
-                {config.urls.settings.users.name}
-              </ActionList.Item>
-            </Box>
-
-            <Box className={style.subMenuWrapper}>
-            <ActionList.Item
-                onClick={() => handleGoTo(config.urls.settings.departments.path)}
-                className={`${appLocation.fullPath === config.urls.settings.departments.path ? style.subMenuActive : ''} ${style.noBackground}`}
-              >
-                {config.urls.settings.departments.name}
-              </ActionList.Item>
-            </Box>
+                  onClick={() => handleGoTo(config.urls.settings.departments.path)}
+                  className={`${appLocation.fullPath === config.urls.settings.departments.path ? style.subMenuActive : ''} ${style.noBackground}`}
+                >
+                  {config.urls.settings.departments.name}
+                </ActionList.Item>
+              </Box>
+            }
 
             <Box className={style.subMenuWrapper}>
             <ActionList.Item
@@ -217,7 +218,7 @@ export const UserAvatar = () => {
                 {state.context.userInfo.user.Name}
               </ActionList.Item>
                             
-              { checkMenuPermissions('userProfile', state.context.userInfo.user.permissions) &&
+              { checkMenuPermission('userProfile', state.context.userInfo.user.permissions) &&
                 <ActionList.Item className={style.userProfileMenuItem}>My profile</ActionList.Item>
               }    
                 
